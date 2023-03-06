@@ -1,0 +1,1 @@
+Natural Number set $N$ itself is just one answer.
