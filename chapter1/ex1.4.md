@@ -1,9 +1,9 @@
 Exercise 1.4 [*] Write a derivation from `List-of-Int` to `(-7 . (3 . (14 . ())))`.
 
 $$
+\newcommand\ilist{\textit{List-of-Int}}
+\newcommand\cons{\enspace.\enspace}
 \begin{align*}
-\gdef\ilist{\textit{List-of-Int}}
-\gdef\cons{\enspace.\enspace}
             & \ilist \\
 \implies & (Int\cons\ilist) \\
 \implies & (-7\cons\ilist) \\
