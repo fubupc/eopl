@@ -1,10 +1,14 @@
-#lang eopl
+#lang racket
+
+(require eopl)
 
 ; Exercise 2.5 [★] We can use any data structure for representing environments, if we can distinguish
 ; empty environments from non-empty ones, and in which one can extract the pieces of a non-empty
 ; environment. Implement environments using a representation in which the empty environment is
 ; represented as the empty list, and in which `extend-env` builds an environment that looks like ...
 ; This is called an *a-list* or *association-list* representation.
+
+; Env = ((Var . SchemeVal) . Env)
 
 ; empty-env: () → Env
 (define empty-env (lambda () '()))
@@ -31,3 +35,5 @@
     (eopl:error 'apply-env "No binding for ~s" search-var)))
 
 (apply-env (extend-env 'x 666 (empty-env)) 'x)
+
+(provide empty-env extend-env apply-env)

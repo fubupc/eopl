@@ -3,7 +3,7 @@
 ; Exercise 2.6 [★] Invent at least three different representations of the environment interface and
 ; implement them.
 
-; #1: Flat list: Env ::= () | (Var SchemeVal . Env)
+; #1: Flat list: Env = () | (Var SchemeVal . Env)
 (module flat-list eopl
   (provide empty-env extend-env apply-env)
 
@@ -32,7 +32,7 @@
     (lambda (search-var)
       (eopl:error 'apply-env "No binding for ~s" search-var))))
 
-; #2: Binary search tree: Env ::= () | ((Var . SchemeVal) Env Env)
+; #2: Binary search tree: Env = () | ((Var . SchemeVal) Env Env)
 (module bst eopl
   (provide empty-env extend-env apply-env)
 
