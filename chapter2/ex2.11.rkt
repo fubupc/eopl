@@ -25,30 +25,27 @@
     (if (null? env)
         (cons (list (list var) (list val)) '())
         (let ((first-rib (car env))
-              (rest-ribs (cdr env)))
+              (rest-env (cdr env)))
           (cons
            (list (cons var (car first-rib))
                  (cons val (cadr first-rib)))
-           rest-ribs)))))
+           rest-env)))))
 
 ; apply-env : Env × Var → SchemeVal
 (define apply-env
   (lambda (env search-var)
     (if (null? env)
         (report-no-binding-found search-var)
-        (let ((first-rib (car env))
-              (rest-ribs (cdr env)))
-          (let ((result (search-var-in-rib (car first-rib) (cadr first-rib) search-var)))
-            (if (eqv? 'found (car result))
-                (cdr result)
-                (apply-env rest-ribs search-var)))))))
+        (apply-env-in-rib (car env) (cdr env) search-var))))
 
-; search-var-in-rib : Listof(Var) × Listof(SchemeVal) × Var → SchemeVal
-(define search-var-in-rib
-  (lambda (vars vals search-var)
-    (cond ((null? vars) (cons 'notfound 'null))
-          ((eqv? (car vars) search-var) (cons 'found (car vals)))
-          (else (search-var-in-rib (cdr vars) (cdr vals) search-var)))))
+; apply-env-in-rib : Listof(Var) × Listof(SchemeVal) × Env × Var → SchemeVal
+(define apply-env-in-rib
+  (lambda (first-rib rest-env search-var)
+    (let ((vars (car first-rib))
+          (vals (cadr first-rib)))
+      (cond ((null? vars) (apply-env rest-env search-var))
+            ((eqv? (car vars) search-var) (car vals))
+            (else (apply-env-in-rib (cdr vars) (cdr vals) search-var))))))
 
 (define report-no-binding-found
   (lambda (search-var)
