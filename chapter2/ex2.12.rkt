@@ -10,7 +10,7 @@
 (define empty-stack
   (lambda ()
     (lambda ()
-      report-empty-stack)))
+      '())))
 
 ; push : SchemeVal × Stack -> Stack
 (define push
@@ -28,15 +28,13 @@
   (lambda (stk)
     (car (stk))))
 
-; TODO: How to implement empty-stack?
 ; empty-stack? : Stack -> Bool
-; (define (empty-stack? ) (lambda (stk) ??? ))
-
-(define report-empty-stack
-  (lambda ()
-    (eopl:error 'empty-stack "Empty stack")))
+(define empty-stack?
+  (lambda (stk)
+    (null? (stk))))
 
 (define stk (push 1 (push 2 (push 3 (empty-stack)))))
 (eqv? 1 (top stk))
 (eqv? 2 (top (pop stk)))
 (eqv? 3 (top (pop (pop stk))))
+(empty-stack? (pop (pop (pop stk))))
