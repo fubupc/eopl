@@ -70,24 +70,24 @@
 (define move-to-left-son
   (lambda (t)
     (if (empty-bintree? t)
-        (eopl:error "move-to-left-son: empty bintree")
+        (eopl:error "move-to-left: empty bintree")
         (bintree-left t))))
 
-; move-to-right-son : Bintree → Bintree
+; move-to-right : Bintree → Bintree
 (define move-to-right-son
   (lambda (t)
     (if (empty-bintree? t)
-        (eopl:error "move-to-right-son empty bintree")
+        (eopl:error "move-to-right: empty bintree")
         (bintree-right t))))
 
-; at-leaf? : Bintree → Int
+; at-leaf? : Bintree → Bool
 (define at-leaf? empty-bintree?)
 
 ; insert-to-left : Int × Bintree → Bintree
 (define insert-to-left
   (lambda (n t)
     (if (empty-bintree? t)
-        (bintree n '() '())
+        (number->bintree n)
         (let ((left (bintree-left t))
               (right (bintree-right t)))
           (bintree (current-element t)
@@ -99,33 +99,32 @@
 (define insert-to-right
   (lambda (n t)
     (if (empty-bintree? t)
-        (bintree n '() '())
+        (number->bintree n)
         (let ((left (bintree-left t))
               (right (bintree-right t)))
           (bintree (current-element t)
                    left
                    (bintree n '() right))))))
 
+(provide (all-defined-out))
 
 ; Tests:
-(number->bintree 13)
-; (13 () ())
-(define t1 (insert-to-right 14
-                            (insert-to-left 12
-                                            (number->bintree 13))))
-t1
-; (13
-;   (12 () ())
-;   (14 () ()))
-(move-to-left-son t1)
-; (12 () ())
-(current-element (move-to-left-son t1))
-; 12
-(at-leaf? (move-to-right-son (move-to-left-son t1)))
-; #t
-(insert-to-left 15 t1)
-; (13
-;   (15
-;     (12 () ())
-;     ())
-;   (14 () ()))
+(module+ test
+  (require rackunit)
+
+  (define t1 (insert-to-right 14
+                              (insert-to-left 12
+                                              (number->bintree 13))))
+
+  (check-equal? (number->bintree 13) '(13 () ()))
+  (check-equal? t1 '(13
+                     (12 () ())
+                     (14 () ())))
+  (check-equal? (move-to-left-son t1) '(12 () ()))
+  (check-equal? (current-element (move-to-left-son t1)) 12)
+  (check-equal? (at-leaf? (move-to-right-son (move-to-left-son t1))) #t)
+  (check-equal? (insert-to-left 15 t1) '(13
+                                         (15
+                                          (12 () ())
+                                          ())
+                                         (14 () ()))))

@@ -71,7 +71,7 @@
               (right (sequence-right seq)))
           (sequence (car left)
                     (cdr left)
-                    (cons (car left) right))))))
+                    (cons (current-element seq) right))))))
 
 ; move-to-right : NodeInSequence → NodeInSequence
 (define move-to-right
@@ -81,7 +81,7 @@
         (let ((left (sequence-left seq))
               (right (sequence-right seq)))
           (sequence (car right)
-                    (cons (car right) left)
+                    (cons (current-element seq) left)
                     (cdr right))))))
 
 ; insert-to-left : Int × NodeInSequence → NodeInSequence
@@ -104,17 +104,15 @@
 ; at-right-end? : NodeInSequence → Bool
 (define at-right-end? (lambda (seq) (null? (sequence-right seq))))
 
+(provide (all-defined-out))
 
 ; Tests:
-(number->sequence 7)
-; (7 () ())
-(current-element '(6 (5 4 3 2 1) (7 8 9)))
-; 6
-(move-to-left '(6 (5 4 3 2 1) (7 8 9)))
-; (5 (4 3 2 1) (6 7 8 9))
-(move-to-right '(6 (5 4 3 2 1) (7 8 9)))
-; (7 (6 5 4 3 2 1) (8 9))
-(insert-to-left 13 '(6 (5 4 3 2 1) (7 8 9)))
-; (6 (13 5 4 3 2 1) (7 8 9))
-(insert-to-right 13 '(6 (5 4 3 2 1) (7 8 9)))
-; (6 (5 4 3 2 1) (13 7 8 9))
+(module+ test
+  (require rackunit)
+
+  (check-equal? (number->sequence 7) '(7 () ()))
+  (check-equal? (current-element '(6 (5 4 3 2 1) (7 8 9))) 6)
+  (check-equal? (move-to-left '(6 (5 4 3 2 1) (7 8 9))) '(5 (4 3 2 1) (6 7 8 9)))
+  (check-equal? (move-to-right '(6 (5 4 3 2 1) (7 8 9))) '(7 (6 5 4 3 2 1) (8 9)))
+  (check-equal? (insert-to-left 13 '(6 (5 4 3 2 1) (7 8 9))) '(6 (13 5 4 3 2 1) (7 8 9)))
+  (check-equal? (insert-to-right 13 '(6 (5 4 3 2 1) (7 8 9))) '(6 (5 4 3 2 1) (13 7 8 9))))
