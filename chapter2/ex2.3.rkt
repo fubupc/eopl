@@ -173,16 +173,20 @@ To obtains the cannonical representation, these are 2 possible methods:
 (define (is-odd? n) (not (is-even? n)))
 
 ; Some tests
+(module+ test
+  (require rackunit)
 
-(is-zero? (predecessor one))
-(is-zero? (predecessor (successor (zero))))
-(is-zero? (predecessor (predecessor (predecessor (successor (successor one))))))
+  (check-true (is-zero? (zero)))
+  (check-true (is-one? one))
+  (check-true (is-neg-one? (negate one)))
 
-(is-one? (successor (zero)))
-(is-one? (predecessor (successor one)))
-(is-one? (predecessor (predecessor (successor (successor one)))))
+  (check-equal? (predecessor one) (zero))
+  (check-equal? (predecessor (predecessor (predecessor (successor (successor one))))) (zero))
+  (check-equal? (successor (zero)) one)
+  (check-equal? (predecessor (successor one)) one)
+  (check-equal? (predecessor (predecessor (successor (successor one)))) one)
 
-(let* ((two (diff-tree-plus-canon one one))
-       (three (diff-tree-plus-canon two one)))
-  (and (is-one? (diff-tree-plus-canon three (negate two)))
-       (is-neg-one? (diff-tree-plus-canon two (negate three)))))
+  (define two (diff-tree-plus-canon one one))
+  (define three (diff-tree-plus-canon two one))
+  (check-equal? (diff-tree-plus-canon three (negate two)) one)
+  (check-equal? (diff-tree-plus-canon two (negate three)) (negate one)))
