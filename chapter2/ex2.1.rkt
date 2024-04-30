@@ -35,14 +35,6 @@
                 ((and (= first_digit 1) (is-zero? remaining)) (zero))
                 (else (cons (- first_digit 1) remaining)))))))
 
-(define one (successor (zero)))
-(define two (successor one))
-(define three (successor two))
-(define four (successor three))
-(predecessor one)
-(predecessor two)
-(predecessor three)
-(predecessor four)
 
 ; Question: Calculate the factorial of 10. How does the execution time vary as this argument changes?
 ;           How does the execution time vary as the base changes?
@@ -53,8 +45,6 @@
     (if (is-zero? x)
         y
         (successor (plus (predecessor x) y)))))
-
-(plus three four)
 
 ; muliply complexity: O(log_N(y)) + O(log_N(2*y)) + ... + O(log_N(x*y))
 ;                   = O(log_N(y^x*x!))
@@ -67,8 +57,6 @@
         (zero)
         (plus y (multiply (predecessor x) y)))))
 
-(multiply three four)
-
 ; n! complexity: O(n^2*log_N(n)) + O((n-1)^2*log_N(n-1)) + .. = O(n^3*log_N(n))
 (define factorial
   (lambda (n)
@@ -76,5 +64,18 @@
         (successor (zero))
         (multiply n (factorial (predecessor n))))))
 
-(define ten (multiply two (plus two three)))
-(factorial ten)
+(module+ test
+  (require rackunit)
+
+  (define one (successor (zero)))
+  (define two (successor one))
+  (define three (successor two))
+  (define four (successor three))
+
+  (check-equal? (predecessor one) (zero))
+  (check-equal? (predecessor two) one)
+  (check-equal? (predecessor three) two)
+  (check-equal? (predecessor four) three)
+  (check-equal? (plus three three) (multiply two three))
+  (check-equal? (plus two four) (multiply two three))
+  (check-equal? (factorial four) (multiply four (multiply three (multiply two one)))))
