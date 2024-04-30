@@ -12,25 +12,39 @@
 (require eopl)
 (require (prefix-in raw: "ex2.19.rkt"))
 
-; Bintree = (CurrentNode . ParentNodes)
+; Bintree = (CurrentNode . Listof(ParentInfo))
 ; CurrentNode = RawBintree
-; ParentNodes = Listof((HandSide . RawBinTree))
-; HandSide = 'left | 'right
+; ParentInfo = (ParentVal . SiblingHandside . SiblingTree)
+; ParentVal = Int
+; SiblingHandside = 'left | 'right
+; SiblingTree = RawBintree
 ; RawBintree = () | (Int RawBintree RawBinTree)
 
 ; Interface:
 ; - Constructors:
-; bintree : Bintree × Listof(RawBintree) → Bintree
+; bintree : CurrentNode × Listof(ParentInfo) → Bintree
 (define bintree (lambda (current-node parents) (list current-node parents)))
 
-; - Predicates: None, because there is only a single shape of NodeInSequence.
+; parent-info : ParentVal × SiblingHandside × SiblingTree → ParentInfo
+(define parent-info (lambda (val shs st) (list val shs st)))
+
+; - Predicates: None, because there is only a single shape of Bintree.
 
 ; - Extractors:
-; bintree-current : Bintree → CurrentNode
-(define bintree-current (lambda (t) (car t)))
+; bintree->current : Bintree → CurrentNode
+(define bintree->current (lambda (t) (car t)))
 
-; bintree-parents : Bintree → ParentNodes
-(define bintree-parents (lambda (t) (cadr t)))
+; bintree->parents : Bintree → Listof(ParentInfo)
+(define bintree->parents (lambda (t) (cadr t)))
+
+; parent-info->val : ParentInfo -> ParentVal
+(define parent-info->val (lambda (pn) (car pn)))
+
+; parent-info->sib-handside : ParentInfo -> SiblingHandSide
+(define parent-info->sib-handside (lambda (pn) (cadr pn)))
+
+; parent-info->sib-tree : ParentInfo -> SiblingTree
+(define parent-info->sib-tree (lambda (pn) (caddr pn)))
 
 
 ; Other functions depending on the interface:
@@ -38,52 +52,61 @@
 (define number->bintree (lambda (n) (bintree (raw:number->bintree n) '())))
 
 ; current-element : Bintree → Int
-(define current-element (lambda (t) (raw:current-element (bintree-current t))))
+(define current-element (lambda (t) (raw:current-element (bintree->current t))))
 
 ; at-leaf? : Bintree → Bool
-(define at-leaf? (lambda (t) (raw:empty-bintree? (bintree-current t))))
+(define at-leaf? (lambda (t) (raw:empty-bintree? (bintree->current t))))
 
 ; at-root? : Bintree → Bool
-(define at-root? (lambda (t) (null? (bintree-parents t))))
+(define at-root? (lambda (t) (null? (bintree->parents t))))
 
 ; move-to-left-son : Bintree → Bintree
 (define move-to-left-son
   (lambda (t)
     (if (at-leaf? t)
         (eopl:error "move-to-left-son: already at leaf")
-        (bintree (raw:move-to-left-son (bintree-current t))
-                 (cons (list 'left (bintree-current t)) (bintree-parents t))))))
+        (let ((current (bintree->current t)))
+          (bintree (raw:move-to-left-son current)
+                   (cons (parent-info (raw:current-element current)
+                                      'right
+                                      (raw:move-to-right-son current))
+                         (bintree->parents t)))))))
 
 ; move-to-right-son : Bintree → Bintree
 (define move-to-right-son
   (lambda (t)
     (if (at-leaf? t)
-        (eopl:error "move-to-right-son: already at leaf")
-        (bintree (raw:move-to-right-son (bintree-current t))
-                 (cons (list 'right (bintree-current t)) (bintree-parents t))))))
+        (eopl:error "move-to-left-son: already at leaf")
+        (let ((current (bintree->current t)))
+          (bintree (raw:move-to-right-son current)
+                   (cons (parent-info (raw:current-element current)
+                                      'left
+                                      (raw:move-to-left-son current))
+                         (bintree->parents t)))))))
 
 ; move-up : Bintree → Bintree
 (define move-up
   (lambda (t)
     (if (at-root? t)
         (eopl:error "move-up: already at root")
-        (bintree (cadar (bintree-parents t)) (cdr (bintree-parents t))))))
+        (let ((current (bintree->current t))
+              (parent-info (car (bintree->parents t))))
+          (let ((parent (if (eqv? (parent-info->sib-handside parent-info) 'left)
+                            (raw:bintree (parent-info->val parent-info) (parent-info->sib-tree parent-info) current)
+                            (raw:bintree (parent-info->val parent-info) current (parent-info->sib-tree parent-info)))))
+            (bintree parent (cdr (bintree->parents t))))))))
 
 ; insert-to-left : Int × Bintree → Bintree
 (define insert-to-left
   (lambda (n t)
-    (let ((new-current (raw:insert-to-left n (bintree-current t)))
-          (old-parents (bintree-parents t)))
-      (bintree new-current
-               (update-parents new-current old-parents)))))
+    (let ((new-current (raw:insert-to-left n (bintree->current t))))
+      (bintree new-current (bintree->parents t)))))
 
 ; insert-to-right : Int × Bintree → Bintree
 (define insert-to-right
   (lambda (n t)
-    (let ((new-current (raw:insert-to-right n (bintree-current t)))
-          (old-parents (bintree-parents t)))
-      (bintree new-current
-               (update-parents new-current old-parents)))))
+    (let ((new-current (raw:insert-to-right n (bintree->current t))))
+      (bintree new-current (bintree->parents t)))))
 
 ; update-parents : CurrentNode × ParentNodes → ParentNodes
 (define update-parents
@@ -115,7 +138,7 @@
   (check-equal? (current-element (move-to-left-son t1)) 12)
   (check-equal? (at-leaf? (move-to-right-son (move-to-left-son t1))) #t)
   (check-equal? (at-root? t1) #t)
-  (check-equal? (raw:current-element (cadar (bintree-parents (move-to-left-son t1)))) 13)
+  (check-equal? (parent-info->val (car (bintree->parents (move-to-left-son t1)))) 13)
 
   (define t2 (insert-to-left 15 t1))
   (check-equal? (current-element t2) 13)
