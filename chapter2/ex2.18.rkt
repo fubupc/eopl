@@ -45,14 +45,14 @@
 ; - Predicates: None, because there is only a single shape of NodeInSequence.
 
 ; - Extractors:
-; sequence-current : NodeInSequence → Int
-(define sequence-current (lambda (seq) (car seq)))
+; sequence->current : NodeInSequence → Int
+(define sequence->current (lambda (seq) (car seq)))
 
-; sequence-left : NodeInSequence → Listof(Int)
-(define sequence-left (lambda (seq) (cadr seq)))
+; sequence->left : NodeInSequence → Listof(Int)
+(define sequence->left (lambda (seq) (cadr seq)))
 
-; sequence-right : NodeInSequence → Listof(Int)
-(define sequence-right (lambda (seq) (caddr seq)))
+; sequence->right : NodeInSequence → Listof(Int)
+(define sequence->right (lambda (seq) (caddr seq)))
 
 
 ; Other functions depending on the interface:
@@ -60,15 +60,15 @@
 (define number->sequence (lambda (n) (sequence n '() '())))
 
 ; current-element : NodeInSequence → Int
-(define current-element sequence-current)
+(define current-element sequence->current)
 
 ; move-to-left : NodeInSequence → NodeInSequence
 (define move-to-left
   (lambda (seq)
     (if (at-left-end? seq)
         (eopl:error "move-to-left: sequence is at the left end")
-        (let ((left (sequence-left seq))
-              (right (sequence-right seq)))
+        (let ((left (sequence->left seq))
+              (right (sequence->right seq)))
           (sequence (car left)
                     (cdr left)
                     (cons (current-element seq) right))))))
@@ -78,8 +78,8 @@
   (lambda (seq)
     (if (at-right-end? seq)
         (eopl:error "move-to-right: sequence is at the right end")
-        (let ((left (sequence-left seq))
-              (right (sequence-right seq)))
+        (let ((left (sequence->left seq))
+              (right (sequence->right seq)))
           (sequence (car right)
                     (cons (current-element seq) left)
                     (cdr right))))))
@@ -88,21 +88,21 @@
 (define insert-to-left
   (lambda (n seq)
     (sequence (current-element seq)
-              (cons n (sequence-left seq))
-              (sequence-right seq))))
+              (cons n (sequence->left seq))
+              (sequence->right seq))))
 
 ;  insert-to-right : Int × NodeInSequence → NodeInSequence
 (define insert-to-right
   (lambda (n seq)
     (sequence (current-element seq)
-              (sequence-left seq)
-              (cons n (sequence-right seq)))))
+              (sequence->left seq)
+              (cons n (sequence->right seq)))))
 
 ; at-left-end? : NodeInSequence → Bool
-(define at-left-end? (lambda (seq) (null? (sequence-left seq))))
+(define at-left-end? (lambda (seq) (null? (sequence->left seq))))
 
 ; at-right-end? : NodeInSequence → Bool
-(define at-right-end? (lambda (seq) (null? (sequence-right seq))))
+(define at-right-end? (lambda (seq) (null? (sequence->right seq))))
 
 (provide (all-defined-out))
 

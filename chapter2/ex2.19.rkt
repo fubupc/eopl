@@ -49,14 +49,14 @@
 (define empty-bintree? (lambda (t) (null? t)))
 
 ; - Extractors:
-; bintree-number : Bintree → Int
-(define bintree-number (lambda (t) (car t)))
+; bintree->number : Bintree → Int
+(define bintree->number (lambda (t) (car t)))
 
-; bintree-left : Bintree → Bintree
-(define bintree-left (lambda (t) (cadr t)))
+; bintree->left : Bintree → Bintree
+(define bintree->left (lambda (t) (cadr t)))
 
-; bintree-right : Bintree → Bintree
-(define bintree-right (lambda (t) (caddr t)))
+; bintree->right : Bintree → Bintree
+(define bintree->right (lambda (t) (caddr t)))
 
 
 ; Other functions depending on the interface:
@@ -64,21 +64,21 @@
 (define number->bintree (lambda (n) (bintree n '() '())))
 
 ; current-element : Bintree → Int
-(define current-element bintree-number)
+(define current-element bintree->number)
 
 ; move-to-left-son : Bintree → Bintree
 (define move-to-left-son
   (lambda (t)
     (if (empty-bintree? t)
         (eopl:error "move-to-left: empty bintree")
-        (bintree-left t))))
+        (bintree->left t))))
 
 ; move-to-right : Bintree → Bintree
 (define move-to-right-son
   (lambda (t)
     (if (empty-bintree? t)
         (eopl:error "move-to-right: empty bintree")
-        (bintree-right t))))
+        (bintree->right t))))
 
 ; at-leaf? : Bintree → Bool
 (define at-leaf? empty-bintree?)
@@ -88,8 +88,8 @@
   (lambda (n t)
     (if (empty-bintree? t)
         (number->bintree n)
-        (let ((left (bintree-left t))
-              (right (bintree-right t)))
+        (let ((left (bintree->left t))
+              (right (bintree->right t)))
           (bintree (current-element t)
                    (bintree n left '())
                    right)))))
@@ -100,8 +100,8 @@
   (lambda (n t)
     (if (empty-bintree? t)
         (number->bintree n)
-        (let ((left (bintree-left t))
-              (right (bintree-right t)))
+        (let ((left (bintree->left t))
+              (right (bintree->right t)))
           (bintree (current-element t)
                    left
                    (bintree n '() right))))))
