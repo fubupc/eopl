@@ -34,6 +34,10 @@
   (lambda (search-var)
     (eopl:error 'apply-env "No binding for ~s" search-var)))
 
-(apply-env (extend-env 'x 666 (empty-env)) 'x)
-
 (provide empty-env extend-env apply-env)
+
+(module+ test
+  (require rackunit)
+
+  (check-equal? (apply-env (extend-env 'a 1 (empty-env)) 'a) 1)
+  (check-exn exn:fail? (lambda () (apply-env (empty-env) 'a))))
