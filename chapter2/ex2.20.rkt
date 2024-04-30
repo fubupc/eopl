@@ -108,23 +108,6 @@
     (let ((new-current (raw:insert-to-right n (bintree->current t))))
       (bintree new-current (bintree->parents t)))))
 
-; update-parents : CurrentNode × ParentNodes → ParentNodes
-(define update-parents
-  (lambda (new-current old-parents)
-    (if (null? old-parents)
-        '()
-        (let ((old-parent (cadr old-parents))
-              (hand-side  (caar old-parents)))
-          (let ((new-parent (if (eqv? hand-side 'left)
-                                (raw:bintree (raw:bintree-number old-parent)
-                                             new-current
-                                             (raw:bintree-right old-parent))
-                                (raw:bintree (raw:bintree-number old-parent)
-                                             (raw:bintree-left old-parent)
-                                             new-current))))
-            (cons (cons hand-side new-parent)
-                  (update-parents new-parent (cdr old-parents))))))))
-
 
 ; Tests:
 (module+ test
