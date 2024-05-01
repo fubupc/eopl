@@ -27,10 +27,11 @@
                 saved-val
                 (apply-env saved-env search-var))))))
 
-
   (define report-no-binding-found
     (lambda (search-var)
-      (eopl:error 'apply-env "No binding for ~s" search-var))))
+      (eopl:error 'apply-env "No binding for ~s" search-var)))
+
+  )
 
 ; #2: Binary search tree: Env = () | ((Var . SchemeVal) Env Env)
 (module bst eopl
@@ -77,13 +78,29 @@
 
 ; TODO: #3: ???
 
-(require 'flat-list)
-; (require 'bst)
 
-; (extend-env 'a 111 (empty-env))
-(let ((env (extend-env 'c 333 (extend-env 'b 222 (extend-env 'a 111 (empty-env))))))
-  (printf "env: ~s\n" env)
-  (printf "a: ~s\n" (apply-env env 'a))
-  (printf "b: ~s\n" (apply-env env 'b))
-  (printf "c: ~s\n" (apply-env env 'c))
-  (printf "d: ~s\n" (apply-env env 'd)))
+; Tests
+(module+ test
+  (require rackunit)
+  (require (prefix-in flist: (submod ".." flat-list)))
+  (require (prefix-in bst: (submod ".." flat-list)))
+
+  (test-case
+   "Test flat-list representation"
+   (define e (flist:extend-env 'a 1 (flist:extend-env 'b 2 (flist:extend-env 'c 3 (flist:empty-env)))))
+   (check-equal? (flist:apply-env e 'a) 1)
+   (check-equal? (flist:apply-env e 'b) 2)
+   (check-equal? (flist:apply-env e 'c) 3)
+
+   (check-exn exn:fail? (lambda () (flist:apply-env (flist:empty-env) 'a)))
+   (check-exn exn:fail? (lambda () (flist:apply-env e 'd))))
+
+  (test-case
+   "Test bst representation"
+   (define e (bst:extend-env 'a 1 (bst:extend-env 'b 2 (bst:extend-env 'c 3 (bst:empty-env)))))
+   (check-equal? (bst:apply-env e 'a) 1)
+   (check-equal? (bst:apply-env e 'b) 2)
+   (check-equal? (bst:apply-env e 'c) 3)
+
+   (check-exn exn:fail? (lambda () (bst:apply-env (bst:empty-env) 'a)))
+   (check-exn exn:fail? (lambda () (bst:apply-env e 'd)))))
