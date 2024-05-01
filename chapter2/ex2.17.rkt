@@ -63,11 +63,30 @@
           (occurs-free? search-var (app-exp->rand exp))))))))
 
 
-; tests
-(require 'λ)
-(occurs-free? 'x 'x)
-(occurs-free? 'x 'y)
-(occurs-free? 'x '(λ x \. (x y)))
-(occurs-free? 'x '(λ y \. (x y)))
-(occurs-free? 'x '((λ x \. x) (x y)))
-(occurs-free? 'x '(λ y \. (λ z \. (x (y z)))))
+; Tests
+(module+ test
+  (require rackunit)
+  (require (submod ".." λ))
+
+  (define e1 (var-exp 'x))
+  (define e2 (var-exp 'y))
+  (define e3 (lambda-exp 'x (app-exp (var-exp 'x) (var-exp 'y))))
+  (define e4 (lambda-exp 'y (app-exp (var-exp 'x) (var-exp 'y))))
+  (define e5 (app-exp (lambda-exp 'x (var-exp 'x)) (app-exp (var-exp 'x) (var-exp 'y))) )
+  (define e6 (lambda-exp 'y (lambda-exp 'z (app-exp (var-exp'x) (app-exp (var-exp 'y) (var-exp 'z))))))
+
+  ; Check the interface
+  (check-equal? e1 'x)
+  (check-equal? e2 'y)
+  (check-equal? e3 '(λ x \. (x y)))
+  (check-equal? e4 '(λ y \. (x y)))
+  (check-equal? e5 '((λ x \. x) (x y)))
+  (check-equal? e6 '(λ y \. (λ z \. (x (y z)))))
+
+  ; Check functions based on the interface
+  (check-true (occurs-free? 'x e1))
+  (check-false (occurs-free? 'x e2))
+  (check-false (occurs-free? 'x e3))
+  (check-true (occurs-free? 'x e4))
+  (check-true (occurs-free? 'x e5))
+  (check-true (occurs-free? 'x e6)))

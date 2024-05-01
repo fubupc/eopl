@@ -40,9 +40,16 @@
 (module+ test
   (require rackunit)
 
-  (check-true (occurs-free? 'x (var-exp 'x)))
-  (check-false (occurs-free? 'x (var-exp 'y)))
-  (check-false (occurs-free? 'x (lambda-exp 'x (app-exp (var-exp 'x) (var-exp 'y)))))
-  (check-true (occurs-free? 'x (lambda-exp 'y (app-exp (var-exp 'x) (var-exp 'y)))))
-  (check-true (occurs-free? 'x (app-exp (lambda-exp 'x (var-exp 'x)) (app-exp (var-exp 'x) (var-exp 'y)))))
-  (check-true (occurs-free? 'x (lambda-exp 'y (lambda-exp 'z (app-exp (var-exp'x) (app-exp (var-exp 'x) (var-exp 'y))))))))
+  (define e1 (var-exp 'x))
+  (define e2 (var-exp 'y))
+  (define e3 (lambda-exp 'x (app-exp (var-exp 'x) (var-exp 'y))))
+  (define e4 (lambda-exp 'y (app-exp (var-exp 'x) (var-exp 'y))))
+  (define e5 (app-exp (lambda-exp 'x (var-exp 'x)) (app-exp (var-exp 'x) (var-exp 'y))) )
+  (define e6 (lambda-exp 'y (lambda-exp 'z (app-exp (var-exp'x) (app-exp (var-exp 'y) (var-exp 'z))))))
+
+  (check-true (occurs-free? 'x e1))
+  (check-false (occurs-free? 'x e2))
+  (check-false (occurs-free? 'x e3))
+  (check-true (occurs-free? 'x e4))
+  (check-true (occurs-free? 'x e5))
+  (check-true (occurs-free? 'x e6)))
