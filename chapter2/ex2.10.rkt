@@ -20,4 +20,11 @@
          (cdr vals)
          (extend-env (car vars) (car vals) env)))))
 
-(apply-env (extend-env* '(a b c) '(1 2 3) (empty-env)) 'a)
+(module+ test
+  (require rackunit)
+
+  (define e (extend-env* '(a b c) '(1 2 3) (empty-env)))
+  (check-equal? (apply-env e 'a) 1)
+  (check-equal? (apply-env e 'b) 2)
+  (check-equal? (apply-env e 'c) 3)
+  (check-exn exn:fail? (lambda () (apply-env e 'd))))

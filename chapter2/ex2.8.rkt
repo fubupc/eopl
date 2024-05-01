@@ -9,4 +9,7 @@
 ; empty-env?: Env -> Bool
 (define empty-env? (lambda (env) (null? env)))
 
-(empty-env? (empty-env))
+(module+ test
+  (require rackunit)
+
+  (check-true (empty-env? (empty-env))))
