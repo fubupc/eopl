@@ -36,8 +36,19 @@
 
 (provide empty-env extend-env apply-env)
 
+
+; Tests
 (module+ test
   (require rackunit)
 
-  (check-equal? (apply-env (extend-env 'a 1 (empty-env)) 'a) 1)
-  (check-exn exn:fail? (lambda () (apply-env (empty-env) 'a))))
+  (define e1 (extend-env 'a 1 (extend-env 'b 2 (extend-env 'c 3 (empty-env)))))
+  (define e2 (extend-env 'b 4 e1))
+
+  (check-equal? (apply-env e1 'b) 2)
+
+  (check-equal? (apply-env e2 'a) 1)
+  (check-equal? (apply-env e2 'b) 4) ; not 2
+  (check-equal? (apply-env e2 'c) 3)
+
+  (check-exn exn:fail? (lambda () (apply-env (empty-env) 'a)))
+  (check-exn exn:fail? (lambda () (apply-env e2 'd))))

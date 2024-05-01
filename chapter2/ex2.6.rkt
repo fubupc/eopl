@@ -87,20 +87,28 @@
 
   (test-case
    "Test flat-list representation"
-   (define e (flist:extend-env 'a 1 (flist:extend-env 'b 2 (flist:extend-env 'c 3 (flist:empty-env)))))
-   (check-equal? (flist:apply-env e 'a) 1)
-   (check-equal? (flist:apply-env e 'b) 2)
-   (check-equal? (flist:apply-env e 'c) 3)
+   (define e1 (flist:extend-env 'a 1 (flist:extend-env 'b 2 (flist:extend-env 'c 3 (flist:empty-env)))))
+   (define e2 (flist:extend-env 'b 4 e1))
+
+   (check-equal? (flist:apply-env e1 'b) 2)
+
+   (check-equal? (flist:apply-env e2 'a) 1)
+   (check-equal? (flist:apply-env e2 'b) 4) ; not 2
+   (check-equal? (flist:apply-env e2 'c) 3)
 
    (check-exn exn:fail? (lambda () (flist:apply-env (flist:empty-env) 'a)))
-   (check-exn exn:fail? (lambda () (flist:apply-env e 'd))))
+   (check-exn exn:fail? (lambda () (flist:apply-env e2 'd))))
 
   (test-case
    "Test bst representation"
-   (define e (bst:extend-env 'a 1 (bst:extend-env 'b 2 (bst:extend-env 'c 3 (bst:empty-env)))))
-   (check-equal? (bst:apply-env e 'a) 1)
-   (check-equal? (bst:apply-env e 'b) 2)
-   (check-equal? (bst:apply-env e 'c) 3)
+   (define e1 (bst:extend-env 'a 1 (bst:extend-env 'b 2 (bst:extend-env 'c 3 (bst:empty-env)))))
+   (define e2 (bst:extend-env 'b 4 e1))
+
+   (check-equal? (bst:apply-env e1 'b) 2)
+
+   (check-equal? (bst:apply-env e2 'a) 1)
+   (check-equal? (bst:apply-env e2 'b) 4) ; not 2
+   (check-equal? (bst:apply-env e2 'c) 3)
 
    (check-exn exn:fail? (lambda () (bst:apply-env (bst:empty-env) 'a)))
-   (check-exn exn:fail? (lambda () (bst:apply-env e 'd)))))
+   (check-exn exn:fail? (lambda () (bst:apply-env e2 'd)))))

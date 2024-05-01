@@ -23,8 +23,9 @@
 (module+ test
   (require rackunit)
 
-  (define e (extend-env* '(a b c) '(1 2 3) (empty-env)))
+  (define e (extend-env* '(c d) '(4 5) (extend-env* '(a b c) '(1 2 3) (empty-env))))
   (check-equal? (apply-env e 'a) 1)
   (check-equal? (apply-env e 'b) 2)
-  (check-equal? (apply-env e 'c) 3)
-  (check-exn exn:fail? (lambda () (apply-env e 'd))))
+  (check-equal? (apply-env e 'c) 4) ; not 3
+  (check-equal? (apply-env e 'd) 5)
+  (check-exn exn:fail? (lambda () (apply-env e 'e))))

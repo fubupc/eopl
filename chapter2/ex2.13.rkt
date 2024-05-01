@@ -41,8 +41,18 @@
     (eopl:error 'apply-env "No binding for ~s" search-var)))
 
 
-; Some tests
-(empty-env? (empty-env))
-(empty-env? (extend-env 'x 1 (empty-env)))
-(apply-env (extend-env 'x 1 (empty-env)) 'x)
-(apply-env (extend-env 'y 2 (extend-env 'x 1 (empty-env))) 'x)
+; Tests
+(module+ test
+  (require rackunit)
+
+  (define e1 (extend-env 'a 1 (extend-env 'b 2 (extend-env 'c 3 (empty-env)))))
+  (define e2 (extend-env 'b 4 e1))
+
+  (check-equal? (apply-env e1 'b) 2)
+
+  (check-equal? (apply-env e2 'a) 1)
+  (check-equal? (apply-env e2 'b) 4) ; not 2
+  (check-equal? (apply-env e2 'c) 3)
+
+  (check-exn exn:fail? (lambda () (apply-env (empty-env) 'a)))
+  (check-exn exn:fail? (lambda () (apply-env e2 'd))))

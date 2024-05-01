@@ -48,5 +48,18 @@
   (lambda (search-var)
     (eopl:error 'apply-env "No binding for ~s" search-var)))
 
-(has-binding? (empty-env) 'a)
-(has-binding? (extend-env 'y 777 (extend-env 'x 666 (empty-env))) 'x)
+
+; Tests
+(module+ test
+  (require rackunit)
+
+  (define e1 (extend-env 'a 1 (extend-env 'b 2 (extend-env 'c 3 (empty-env)))))
+  (define e2 (extend-env 'b 4 e1))
+
+  (check-false (has-binding? (empty-env) 'a))
+
+  (check-true (has-binding? e2 'a))
+  (check-true (has-binding? e2 'b))
+  (check-true (has-binding? e2 'c))
+
+  (check-false (has-binding? e2 'd)))
