@@ -33,8 +33,16 @@
   (lambda (stk)
     (null? (stk))))
 
-(define stk (push 1 (push 2 (push 3 (empty-stack)))))
-(eqv? 1 (top stk))
-(eqv? 2 (top (pop stk)))
-(eqv? 3 (top (pop (pop stk))))
-(empty-stack? (pop (pop (pop stk))))
+; Tests
+(module+ test
+  (require rackunit)
+
+  (define stk (push 1 (push 2 (push 3 (empty-stack)))))
+
+  (check-true (empty-stack? (pop (pop (pop stk)))))
+  (check-equal? (top stk) 1)
+  (check-equal? (top (pop stk)) 2)
+  (check-exn exn:fail? (lambda () (top (empty-stack))))
+  (check-exn exn:fail? (lambda () (pop (empty-stack))))
+  (check-exn exn:fail? (lambda () (top (pop (pop (pop stk))))))
+  (check-exn exn:fail? (lambda () (pop (pop (pop (pop stk)))))))
