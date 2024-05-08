@@ -1,0 +1,9 @@
+{
+    "latex-workshop.latexindent.args": [
+        "-c",
+        "%DIR%/",
+        "-l=%WORKSPACE_FOLDER%/latexindent.yaml",
+        "%TMPFILE%",
+        "-y=defaultIndent: '%INDENT%'",
+    ]
+}

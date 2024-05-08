@@ -1,0 +1,8 @@
+specialBeginEnd:
+  qtree-node:
+    begin: \[
+    end: \]
+  qtree-edge:
+    begin: \\edge\s
+    end: ;
+  specialBeforeCommand: 1
