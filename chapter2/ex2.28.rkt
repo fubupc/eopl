@@ -27,15 +27,17 @@
 (define unparse-lc-exp
   (lambda (exp)
     (cases lc-exp exp
-      (var-exp (var) (~a "var-exp (" var ")"))
-      (lambda-exp (bound-var body) (~a "lambda-exp (" bound-var " " (unparse-lc-exp body) ")"))
-      (app-exp (rator rand) (~a "app-exp (" (unparse-lc-exp rator) " " (unparse-lc-exp rand) ")")))))
+      (var-exp (var)
+               (symbol->string var))
+      (lambda-exp (bound-var body)
+                  (format "(lambda (~a) ~a)" bound-var  (unparse-lc-exp body)))
+      (app-exp (rator rand)
+               (format "(~a ~a)" (unparse-lc-exp rator) (unparse-lc-exp rand))))))
 
 
 ; Tests
 (module+ test
   (require rackunit)
 
-  (check-equal? (unparse-lc-exp (var-exp 'a)) "var-exp (a)")
-  (check-equal? (unparse-lc-exp (app-exp (lambda-exp 'a (app-exp (var-exp 'a) (var-exp 'b))) (var-exp 'c))) "app-exp (lambda-exp (a app-exp (var-exp (a) var-exp (b))) var-exp (c))")
-  )
+  (check-equal? (unparse-lc-exp (var-exp 'a)) "a")
+  (check-equal? (unparse-lc-exp (app-exp (lambda-exp 'a (app-exp (var-exp 'a) (var-exp 'b))) (var-exp 'c))) "((lambda (a) (a b)) c)"))
