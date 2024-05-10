@@ -1,4 +1,4 @@
-Exercise 1.5 [`**`] Prove that if $e \in LcExp$, then there are the same number of left and right parentheses in $e$.
+Exercise 1.5 [★★] Prove that if $e \in LcExp$, then there are the same number of left and right parentheses in $e$.
 
 Deﬁnition 1.1.8 (lambda expression)
 $$
@@ -10,7 +10,7 @@ LcExp &::= Identiﬁer \\
 $$
 where an identiﬁer is any symbol other than `lambda`.
 
-Proof:
+**Proof:**
 
 Induction Hypothesis, $IH(k)$, is that any $e \in LcExp$ with $\le k$ left parentheses has the same number of right parentheses.
 

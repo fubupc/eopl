@@ -1,3 +1,5 @@
+Exercise 1.1 [★] Write inductive deﬁnitions of the following sets. Write each deﬁnition in all three styles (top-down, bottom-up, and rules of inference). Using your rules, show the derivation of some sample elements of each set.
+
 1. $S=\{3n+2|n \in N\}$
 	- top-down:
 		1. $x=2$, or

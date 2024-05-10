@@ -1,6 +1,6 @@
 Exercise 1.14 [★★] Given the assumption $0 ≤ n < length(v)$, prove that `partial-vector-sum` is correct.
 
-Proof: `partial-vector-sum` is equivalent to the following funciton $f(n)$:
+**Proof:** `partial-vector-sum` is equivalent to the following funciton $f(n)$:
 
 $$
 f(n) = 

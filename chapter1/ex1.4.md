@@ -1,4 +1,6 @@
-Exercise 1.4 [*] Write a derivation from `List-of-Int` to `(-7 . (3 . (14 . ())))`.
+Exercise 1.4 [★] Write a derivation from `List-of-Int` to `(-7 . (3 . (14 . ())))`.
+
+**Answer:**
 
 $$
 \newcommand\ilist{\textit{List-of-Int}}

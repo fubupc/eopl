@@ -1,6 +1,6 @@
 #lang racket
 
-; Exercise 1.12 [*] Eliminate the one call to subst-in-s-exp in subst by replacing it by its
+; Exercise 1.12 [★] Eliminate the one call to subst-in-s-exp in subst by replacing it by its
 ; deﬁnition and simplifying the resulting procedure. The result will be a version of subst that does
 ; not need subst-in-s-exp. This technique is called inlining, and is used by optimizing compilers.
 
