@@ -13,4 +13,8 @@
           sexp)
       (subst new old sexp)))
 
-(subst 'a 'b '((b c) (b () d)))
+
+(module+ test
+  (require rackunit)
+
+  (check-equal? (subst 'a 'b '((b c) (b () d))) '((a c) (a () d))))

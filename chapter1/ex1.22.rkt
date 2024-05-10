@@ -14,5 +14,9 @@
               (cons (car lst) tail)
               tail)))))
 
-(filter-in number? '(a 2 (1 3) b 7))
-(filter-in symbol? '(a (b c) 17 foo))
+
+(module+ test
+  (require rackunit)
+
+  (check-equal? (filter-in number? '(a 2 (1 3) b 7)) '(2 7))
+  (check-equal? (filter-in symbol? '(a (b c) 17 foo)) '(a foo)))

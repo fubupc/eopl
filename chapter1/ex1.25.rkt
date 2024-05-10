@@ -12,5 +12,8 @@
         (or (pred (car lst))
             (exists? pred (cdr lst))))))
 
-(exists? number? '(a b c 3 e))
-(exists? number? '(a b c d e))
+(module+ test
+  (require rackunit)
+
+  (check-equal? (exists? number? '(a b c 3 e)) #t)
+  (check-equal? (exists? number? '(a b c d e)) #f))

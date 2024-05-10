@@ -10,6 +10,9 @@
         '()
         (cons x (duple (- n 1) x)))))
 
-(duple 2 3)
-(duple 4 '(ha ha))
-(duple 0 '(blah))
+(module+ test
+  (require rackunit)
+
+  (check-equal? (duple 2 3) '(3 3))
+  (check-equal? (duple 4 '(ha ha)) '((ha ha) (ha ha) (ha ha) (ha ha)))
+  (check-equal? (duple 0 '(blah)) '()))

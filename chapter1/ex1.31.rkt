@@ -1,10 +1,11 @@
 #lang racket
-(provide (all-defined-out))
 
 ;; Exercise 1.31 [★] Write the following procedures for calculating on a bintree (deﬁnition 1.1.7):
 ;; `leaf` and `interior-node`, which build bintrees, `leaf?`, which tests whether a bintree is a leaf,
 ;; and `lson`, `rson`, and `contents-of`, which extract the components of a node. `contents-of` should
 ;; work on both leaves and interior nodes.
+
+(provide (all-defined-out))
 
 ; leaf: Int -> Bintree
 ; usage: build a leaf.
@@ -34,12 +35,12 @@
         t
         (car t))))
 
+(module+ test
+  (require rackunit)
 
-; (leaf 1)
-; (interior-node 'foo (leaf 1) (leaf 2))
-; (leaf? (leaf 1))
-; (leaf? (interior-node 'foo 1 2))
-; (lson '(bar 1 (foo 1 2)))
-; (rson '(bar 1 (foo 1 2)))
-; (contents-of '(bar 1 (foo 1 2)))
-; (contents-of (leaf 666))
+  (check-equal? (leaf? (leaf 1)) #t)
+  (check-equal? (leaf? (interior-node 'foo 1 2)) #f)
+  (check-equal? (lson '(bar 1 (foo 1 2))) (leaf 1))
+  (check-equal? (rson '(bar 1 (foo 1 2))) (interior-node 'foo 1 2))
+  (check-equal? (contents-of '(bar 1 (foo 1 2))) 'bar)
+  (check-equal? (contents-of (leaf 666)) (leaf 666)))

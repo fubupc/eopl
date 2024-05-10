@@ -14,3 +14,9 @@
             (car slist))
         (subst new old (car slist)))
     (subst new old (cdr slist)))))
+
+(module+ test
+  (require rackunit)
+
+  (check-equal? (subst 'a 'b '((b c) (b () d)))
+                '((a c) (a () d))))

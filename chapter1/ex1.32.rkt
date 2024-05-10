@@ -16,4 +16,7 @@
          (double-tree (lson t))
          (double-tree (rson t))))))
 
-(double-tree '(bar 1 (foo 1 2)))
+(module+ test
+  (require rackunit)
+
+  (check-equal? (double-tree '(bar 1 (foo 1 2))) '(bar 2 (foo 2 4))))

@@ -12,6 +12,11 @@
          (list (car lst))
          (down (cdr lst))))))
 
-(down '(1 2 3))
-(down '((a) (fine) (idea)))
-(down '(a (more (complicated)) object))
+(module+ test
+  (require rackunit)
+
+  (check-equal? (down '(1 2 3)) '((1) (2) (3)))
+  (check-equal? (down '((a) (fine) (idea)))
+                '(((a)) ((fine)) ((idea))))
+  (check-equal? (down '(a (more (complicated)) object))
+                '((a) ((more (complicated))) (object))))

@@ -20,6 +20,9 @@
         (if (eqv? s sexp) 1 0)
         (count-occurrences s sexp))))
 
-(count-occurrences 'x '((f x) y (((x z) x))))
-(count-occurrences 'x '((f x) y (((x z) () x))))
-(count-occurrences 'w '((f x) y (((x z) x))))
+(module+ test
+  (require rackunit)
+
+  (check-equal? (count-occurrences 'x '((f x) y (((x z) x)))) 3)
+  (check-equal? (count-occurrences 'x '((f x) y (((x z) () x)))) 3)
+  (check-equal? (count-occurrences 'w '((f x) y (((x z) x)))) 0))

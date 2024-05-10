@@ -17,5 +17,8 @@
               (append head tail)
               (cons head tail))))))
 
-(up '((1 2) (3 4)))
-(up '((x (y)) z))
+(module+ test
+  (require rackunit)
+
+  (check-equal? (up '((1 2) (3 4))) '(1 2 3 4))
+  (check-equal? (up '((x (y)) z)) '(x (y) z)))

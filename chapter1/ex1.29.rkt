@@ -21,4 +21,8 @@
               (cons i loi)
               (cons head (insert i (cdr loi))))))))
 
-(sort '(8 2 5 2 3))
+
+(module+ test
+  (require rackunit)
+
+  (check-equal? (sort '(8 2 5 2 3)) '(2 2 3 5 8)))

@@ -1,9 +1,30 @@
 #lang racket
 
-(require "ex1.31.rkt")
+; Exercise 1.35 [★★★] Write a procedure `number-leaves` that takes a bintree, and produces a
+; bintree like the original, except the contents of the leaves are numbered starting from 0.
+; For example,
+;
+; (number-leaves
+;  (interior-node 'foo
+;                 (interior-node 'bar
+;                                (leaf 26)
+;                                (leaf 12))
+;                 (interior-node 'baz
+;                                (leaf 11)
+;                                (interior-node 'quux
+;                                               (leaf 117)
+;                                               (leaf 14)))))
+;
+; should return
+;
+; (foo
+;  (bar 0 1)
+;  (baz
+;   2
+;   (quux 3 4)))
+;
 
-;; Exercise 1.35 [★★★] Write a procedure `number-leaves` that takes a bintree, and produces a
-;; bintree like the original, except the contents of the leaves are numbered starting from 0.
+(require "ex1.31.rkt")
 
 ; number-leaves: Bintree -> Bintree
 ; usage: produces a bintree like the original, except the contents of the leaves are numbered starting
@@ -28,13 +49,26 @@
             (list (interior-node (contents-of t) left-tree right-tree)
                   (+ left-leaves-num rigth-leaves-num )))))))
 
-(number-leaves
- (interior-node 'foo
-                (interior-node 'bar
-                               (leaf 26)
-                               (leaf 12))
-                (interior-node 'baz
-                               (leaf 11)
-                               (interior-node 'quux
-                                              (leaf 117)
-                                              (leaf 14)))))
+(module+ test
+  (require rackunit)
+
+  (check-equal?
+   (number-leaves
+    (interior-node 'foo
+                   (interior-node 'bar
+                                  (leaf 26)
+                                  (leaf 12))
+                   (interior-node 'baz
+                                  (leaf 11)
+                                  (interior-node 'quux
+                                                 (leaf 117)
+                                                 (leaf 14)))))
+   (interior-node 'foo
+                  (interior-node 'bar
+                                 (leaf 0)
+                                 (leaf 1))
+                  (interior-node 'baz
+                                 (leaf 2)
+                                 (interior-node 'quux
+                                                (leaf 3)
+                                                (leaf 4))))))
